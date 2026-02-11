@@ -9,8 +9,6 @@ metadata:
     app: {{ include "cyberambassador.fullname" . }}
 
 spec:
-  replicas: {{ .Values.application.replicaCount }}
-
   selector:
     matchLabels:
       app: {{ include "cyberambassador.fullname" . }}
