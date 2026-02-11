@@ -1,0 +1,40 @@
+{{- if .Values.application.hpa.enabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "cyberambassador.fullname" . }}-hpa
+  namespace: {{ include "cyberambassador.namespace" . }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "cyberambassador.fullname" . }}
+
+  minReplicas: {{ .Values.application.hpa.minReplicas }}
+  maxReplicas: {{ .Values.application.hpa.maxReplicas }}
+
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.application.hpa.cpuUtilization }}
+
+  behavior:
+    scaleUp:
+      stabilizationWindowSeconds: 0
+      policies:
+        - type: Percent
+          value: 100
+          periodSeconds: 60
+    scaleDown:
+      stabilizationWindowSeconds: 180
+      policies:
+        - type: Pods
+          value: 1
+          periodSeconds: 60
+{{- end }}

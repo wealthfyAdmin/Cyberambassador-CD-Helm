@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "cyberambassador.fullname" . }}
+  namespace: {{ include "cyberambassador.namespace" . }}
+
+spec:
+  type: {{ .Values.application.service.type }}
+
+  selector:
+    app: {{ include "cyberambassador.fullname" . }}
+
+  ports:
+    - port: {{ .Values.application.service.port }}
+      targetPort: {{ .Values.application.service.targetPort }}
