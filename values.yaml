@@ -47,3 +47,18 @@ application:
     minReplicas: 1
     maxReplicas: 3
     cpuUtilization: 70
+
+config:
+  enabled: true
+  name: cyberambassador
+  data:
+    PORT: "3000"
+    DB_HOST: "cyberambassador-postgres"
+    DB_PORT: "5432"
+    DB_NAME: "cyberambassador_db"
+    DB_USER: "cyberambassador_user"
+    MAIL_HOST: "smtp.hostinger.com"
+    MAIL_PORT: "465"
+    MAIL_USER: "noreply@cyberambassador.co.in"
+    MAIL_FROM: "noreply@cyberambassador.co.in"
+    BACKEND_URL: "https://api.cyberambassador.co.in"
