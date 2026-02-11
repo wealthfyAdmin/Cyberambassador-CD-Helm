@@ -5,6 +5,7 @@ metadata:
   namespace: {{ include "cyberambassador.namespace" . }}
   annotations:
     argocd.argoproj.io/sync-wave: "1"
+    checksum/config: {{ include (print $.Template.BasePath "/config-secrets/config.yaml") . | sha256sum }}
   labels:
     app: {{ include "cyberambassador.fullname" . }}
 
