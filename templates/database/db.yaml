@@ -1,0 +1,88 @@
+{{- if .Values.database.enabled }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Values.database.name }}
+  namespace: {{ .Values.namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+  labels:
+    app: {{ .Values.database.name }}
+
+spec:
+  serviceName: {{ .Values.database.service.headlessName }}
+  replicas: {{ .Values.database.replicas }}
+
+  selector:
+    matchLabels:
+      app: {{ .Values.database.name }}
+
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.database.name }}
+
+    spec:
+      securityContext:
+        fsGroup: {{ .Values.database.securityContext.fsGroup }}
+
+      containers:
+        - name: postgres
+          image: "{{ .Values.database.image.repository }}:{{ .Values.database.image.tag }}"
+          imagePullPolicy: {{ .Values.database.image.pullPolicy }}
+
+          ports:
+            - containerPort: {{ .Values.database.service.port }}
+              name: postgres
+
+          env:
+            - name: POSTGRES_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.database.env.configMapName }}
+                  key: {{ .Values.database.env.dbNameKey }}
+
+            - name: POSTGRES_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.database.env.configMapName }}
+                  key: {{ .Values.database.env.dbUserKey }}
+
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.database.env.secretName }}
+                  key: {{ .Values.database.env.dbPasswordKey }}
+
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+
+          resources:
+            {{- toYaml .Values.database.resources | nindent 12 }}
+
+          securityContext:
+            runAsUser: {{ .Values.database.securityContext.runAsUser }}
+            runAsGroup: {{ .Values.database.securityContext.runAsGroup }}
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            seccompProfile:
+              type: RuntimeDefault
+
+          volumeMounts:
+            - name: postgres-data
+              mountPath: /var/lib/postgresql/data
+
+  volumeClaimTemplates:
+    - metadata:
+        name: postgres-data
+      spec:
+        accessModes:
+          - {{ .Values.database.persistence.accessMode }}
+        storageClassName: {{ .Values.database.persistence.storageClass }}
+        resources:
+          requests:
+            storage: {{ .Values.database.persistence.size }}
+{{- end }}

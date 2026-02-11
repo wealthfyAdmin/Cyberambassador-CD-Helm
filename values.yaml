@@ -62,3 +62,44 @@ config:
     MAIL_USER: "noreply@cyberambassador.co.in"
     MAIL_FROM: "noreply@cyberambassador.co.in"
     BACKEND_URL: "https://api.cyberambassador.co.in"
+
+
+database:
+  enabled: true
+  name: cyberambassador-postgres
+  replicas: 1
+
+  image:
+    repository: postgres
+    tag: 16-bookworm
+    pullPolicy: IfNotPresent
+
+  service:
+    port: 5432
+    headlessName: cyberambassador-postgres-headless
+
+  persistence:
+    storageClass: standard-rwo
+    size: 1Gi
+    accessMode: ReadWriteOnce
+
+  resources:
+    requests:
+      cpu: "250m"
+      memory: "512Mi"
+    limits:
+      cpu: "250m"
+      memory: "512Mi"
+
+  securityContext:
+    fsGroup: 999
+    runAsUser: 999
+    runAsGroup: 999
+
+  env:
+    configMapName: cyberambassador
+    secretName: cyberambassador
+    dbNameKey: DB_NAME
+    dbUserKey: DB_USER
+    dbPasswordKey: DB_PASS
+

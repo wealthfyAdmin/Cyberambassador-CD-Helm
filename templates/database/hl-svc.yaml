@@ -1,0 +1,19 @@
+{{- if .Values.database.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.database.service.headlessName }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ .Values.database.name }}
+
+spec:
+  clusterIP: None
+  selector:
+    app: {{ .Values.database.name }}
+
+  ports:
+    - name: postgres
+      port: {{ .Values.database.service.port }}
+      targetPort: {{ .Values.database.service.port }}
+{{- end }}
