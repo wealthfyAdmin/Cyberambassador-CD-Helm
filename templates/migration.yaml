@@ -1,0 +1,80 @@
+{{- if .Values.migration.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "cyberambassador.fullname" . }}-{{ .Values.migration.name }}
+  namespace: {{ .Values.namespace }}
+  annotations:
+    argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/sync-wave: "1"
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded
+
+spec:
+  backoffLimit: {{ .Values.migration.backoffLimit }}
+
+  template:
+    metadata:
+      labels:
+        app: {{ include "cyberambassador.fullname" . }}-{{ .Values.migration.name }}
+
+    spec:
+      restartPolicy: Never
+
+      # =========================
+      # POD SECURITY (REUSE APP)
+      # =========================
+      securityContext:
+        runAsUser: {{ .Values.application.podSecurityContext.runAsUser }}
+        runAsGroup: {{ .Values.application.podSecurityContext.runAsGroup }}
+        fsGroup: {{ .Values.application.podSecurityContext.fsGroup }}
+        fsGroupChangePolicy: {{ .Values.application.podSecurityContext.fsGroupChangePolicy }}
+
+      containers:
+        - name: migrate
+
+          image: "{{ .Values.application.image.repository }}:{{ .Values.application.image.tag }}"
+          imagePullPolicy: {{ .Values.application.image.pullPolicy }}
+
+          command:
+            - sh
+            - -c
+            - |
+              echo "Starting database migrations..."
+              npm run migrate
+              echo "Database migrations completed."
+
+          # =========================
+          # REUSE SAME ENV AS BACKEND
+          # =========================
+          envFrom:
+            - configMapRef:
+                name: {{ .Values.application.envFrom.configMapName }}
+            - secretRef:
+                name: {{ .Values.application.envFrom.secretName }}
+
+          # =========================
+          # CONTAINER SECURITY (REUSE)
+          # =========================
+          securityContext:
+            runAsNonRoot: {{ .Values.application.containerSecurityContext.runAsNonRoot }}
+            allowPrivilegeEscalation: {{ .Values.application.containerSecurityContext.allowPrivilegeEscalation }}
+            capabilities:
+              drop:
+                - ALL
+            seccompProfile:
+              type: RuntimeDefault
+
+          # =========================
+          # MIGRATION RESOURCES
+          # =========================
+          resources:
+            {{- toYaml .Values.migration.resources | nindent 12 }}
+
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+
+      volumes:
+        - name: tmp
+          emptyDir: {}
+{{- end }}
