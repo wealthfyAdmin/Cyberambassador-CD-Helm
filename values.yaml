@@ -1,34 +1,27 @@
 namespace: cyber-ambassador
-
 application:
   name: backend
   replicaCount: 1
-
   image:
     repository: finriustech/cyberambassador-backend
-    tag: 88540a3
+    tag: 24a8359
     pullPolicy: IfNotPresent
-
   service:
     type: ClusterIP
     port: 80
     targetPort: 3000
-
   envFrom:
     configMapName: cyberambassador
     secretName: cyberambassador
-
   podSecurityContext:
     runAsUser: 1001
     runAsGroup: 1001
     fsGroup: 1001
     fsGroupChangePolicy: OnRootMismatch
-
   containerSecurityContext:
     runAsNonRoot: true
     allowPrivilegeEscalation: false
     readOnlyRootFilesystem: true
-
   resources:
     requests:
       cpu: "250m"
@@ -36,18 +29,15 @@ application:
     limits:
       cpu: "250m"
       memory: "256Mi"
-
   initContainer:
     enabled: true
     postgresHost: cyberambassador-postgres
     postgresPort: 5432
-
   hpa:
     enabled: true
     minReplicas: 1
     maxReplicas: 3
     cpuUtilization: 70
-
 config:
   enabled: true
   name: cyberambassador
@@ -62,27 +52,21 @@ config:
     MAIL_USER: "noreply@cyberambassador.co.in"
     MAIL_FROM: "noreply@cyberambassador.co.in"
     BACKEND_URL: "https://api.cyberambassador.co.in"
-
-
 database:
   enabled: true
   name: cyberambassador-postgres
   replicas: 1
-
   image:
     repository: postgres
-    tag:  16-bookworm
+    tag: 16-bookworm
     pullPolicy: IfNotPresent
-
   service:
     port: 5432
     headlessName: cyberambassador-postgres-headless
-
   persistence:
     storageClass: standard-rwo
     size: 1Gi
     accessMode: ReadWriteOnce
-
   resources:
     requests:
       cpu: "250m"
@@ -90,30 +74,23 @@ database:
     limits:
       cpu: "250m"
       memory: "512Mi"
-
   securityContext:
     fsGroup: 999
     runAsUser: 999
     runAsGroup: 999
-
   env:
     configMapName: cyberambassador
     secretName: cyberambassador
     dbNameKey: DB_NAME
     dbUserKey: DB_USER
     dbPasswordKey: DB_PASS
-
 gateway:
   enabled: true
-
   gatewayName: solvox-gateway
   gatewayNamespace: gateway-system
-
   host: api.cyberambassador.co.in
-
   httpSectionName: http
   httpsSectionName: cyberambassador-https
-
   securityHeaders:
     hsts: "max-age=63072000; includeSubDomains; preload"
     xFrameOptions: "DENY"
@@ -121,15 +98,10 @@ gateway:
     referrerPolicy: "strict-origin-when-cross-origin"
     permissionsPolicy: "geolocation=(), microphone=(), camera=()"
     contentSecurityPolicy: "default-src 'self'; style-src 'self' 'unsafe-inline' https://stackpath.bootstrapcdn.com; img-src 'self' data:; font-src 'self' data:; frame-ancestors 'none'; object-src 'none'; base-uri 'self';"
-
-
 migration:
   enabled: true
-
   name: db-migrate
-
   backoffLimit: 1
-
   resources:
     requests:
       cpu: "100m"
