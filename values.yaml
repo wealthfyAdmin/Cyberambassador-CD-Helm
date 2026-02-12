@@ -71,7 +71,7 @@ database:
 
   image:
     repository: postgres
-    tag: 88540a3
+    tag:  16-bookworm
     pullPolicy: IfNotPresent
 
   service:
