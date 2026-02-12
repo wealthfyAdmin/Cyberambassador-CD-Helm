@@ -6,7 +6,7 @@ application:
 
   image:
     repository: finriustech/cyberambassador-backend
-    tag: dff67d0
+    tag: 88540a3
     pullPolicy: IfNotPresent
 
   service:
@@ -71,7 +71,7 @@ database:
 
   image:
     repository: postgres
-    tag: 16-bookworm
+    tag: 88540a3
     pullPolicy: IfNotPresent
 
   service:
