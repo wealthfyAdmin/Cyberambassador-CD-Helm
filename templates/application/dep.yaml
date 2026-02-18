@@ -6,6 +6,7 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "1"
     checksum/config: {{ include (print $.Template.BasePath "/config-secrets/config.yaml") . | sha256sum }}
+    checksum/secrets: {{ include (print $.Template.BasePath "/config-secrets/sealed-secrets.yaml") . | sha256sum }}
   labels:
     app: {{ include "cyberambassador.fullname" . }}
 
@@ -23,7 +24,7 @@ spec:
 
     spec:
       serviceAccountName: {{ .Values.serviceAccount.name }}
-      
+
       securityContext:
         runAsUser: {{ .Values.application.podSecurityContext.runAsUser }}
         runAsGroup: {{ .Values.application.podSecurityContext.runAsGroup }}
