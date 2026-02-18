@@ -137,3 +137,9 @@ migration:
     limits:
       cpu: "250m"
       memory: "256Mi"
+
+
+serviceAccount:
+  create: true
+  name: trace-ksa
+  gcpServiceAccount: trace-sa@solvox-ai-007.iam.gserviceaccount.com
