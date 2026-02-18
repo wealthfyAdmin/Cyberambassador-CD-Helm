@@ -10,7 +10,7 @@ metadata:
     app: {{ include "cyberambassador.fullname" . }}
 
 spec:
-  serviceAccountName: {{ .Values.serviceAccount.name }}
+  
 
   selector:
     matchLabels:
@@ -22,6 +22,8 @@ spec:
         app: {{ include "cyberambassador.fullname" . }}
 
     spec:
+      serviceAccountName: {{ .Values.serviceAccount.name }}
+      
       securityContext:
         runAsUser: {{ .Values.application.podSecurityContext.runAsUser }}
         runAsGroup: {{ .Values.application.podSecurityContext.runAsGroup }}
