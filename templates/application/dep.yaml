@@ -11,8 +11,8 @@ metadata:
     app: {{ include "cyberambassador.fullname" . }}
 
 spec:
+  revisionHistoryLimit: 3
   
-
   selector:
     matchLabels:
       app: {{ include "cyberambassador.fullname" . }}

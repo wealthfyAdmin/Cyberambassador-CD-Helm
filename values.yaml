@@ -62,6 +62,8 @@ config:
     MAIL_USER: "noreply@cyberambassador.co.in"
     MAIL_FROM: "noreply@cyberambassador.co.in"
     BACKEND_URL: "https://api.cyberambassador.co.in"
+    OTEL_NODE_RESOURCE_DETECTORS: "env,host,process,k8s,gcp"
+    OTEL_SERVICE_NAME: "cyberambassador-backend"
 
 
 database:
