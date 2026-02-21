@@ -6,7 +6,7 @@ application:
 
   image:
     repository: finriustech/cyberambassador-backend
-    tag: c866e83
+    tag: 1221a49
     pullPolicy: IfNotPresent
 
   service:
