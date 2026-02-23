@@ -54,6 +54,7 @@ spec:
 
           ports:
             - containerPort: {{ .Values.application.service.targetPort }}
+              name: metrics
 
           envFrom:
             - configMapRef:

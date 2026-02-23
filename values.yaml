@@ -145,3 +145,8 @@ serviceAccount:
   create: true
   name: trace-ksa
   gcpServiceAccount: trace-sa@solvox-ai-007.iam.gserviceaccount.com
+
+monitoring:
+  enabled: true
+  interval: 30s
+  path: /metrics

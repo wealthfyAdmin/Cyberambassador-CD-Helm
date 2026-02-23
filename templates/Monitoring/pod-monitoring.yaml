@@ -1,0 +1,19 @@
+{{- if .Values.monitoring.enabled }}
+apiVersion: monitoring.googleapis.com/v1
+kind: PodMonitoring
+metadata:
+  name: {{ include "cyberambassador.fullname" . }}-monitor
+  namespace: {{ include "cyberambassador.namespace" . }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"   # 👈 After Deployment
+  labels:
+    app: {{ include "cyberambassador.fullname" . }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ include "cyberambassador.fullname" . }}
+  endpoints:
+    - port: metrics   # 👈 must match container port name
+      path: {{ .Values.monitoring.path }}
+      interval: {{ .Values.monitoring.interval }}
+{{- end }}
