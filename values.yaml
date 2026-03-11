@@ -57,13 +57,16 @@ config:
     DB_PORT: "5432"
     DB_NAME: "cyberambassador_db"
     DB_USER: "cyberambassador_user"
+    ACCESS_TOKEN_EXPIRY: "12h"
+    REFRESH_TOKEN_EXPIRY: "30d"
     MAIL_HOST: "smtp.hostinger.com"
     MAIL_PORT: "465"
     MAIL_USER: "noreply@cyberambassador.co.in"
     MAIL_FROM: "noreply@cyberambassador.co.in"
     BACKEND_URL: "https://api.cyberambassador.co.in"
-    OTEL_NODE_RESOURCE_DETECTORS: "env,host,process,k8s,gcp"
-    OTEL_SERVICE_NAME: "cyberambassador-backend"
+    SUBSCRIPTION_CANCEL_NOTIFY_EMAIL: "hritik@cyberambassador.co.in"
+    LIVEKIT_AGENT_NAME: "cyber_ambassador_support_agent"
+    CASHFREE_ENV: "PRODUCTION"
 
 
 database:
