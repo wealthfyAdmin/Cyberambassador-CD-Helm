@@ -7,7 +7,7 @@ metadata:
   annotations:
     argocd.argoproj.io/hook: Sync
     argocd.argoproj.io/sync-wave: "1"
-    argocd.argoproj.io/hook-delete-policy: HookSucceeded , BeforeHookCreation
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded, BeforeHookCreation
 
 spec:
   backoffLimit: {{ .Values.migration.backoffLimit }}
@@ -39,9 +39,29 @@ spec:
             - sh
             - -c
             - |
+              set -euo pipefail
+
+              echo "=================================="
               echo "Starting database migrations..."
+              echo "=================================="
+
               npm run migrate
-              echo "Database migrations completed."
+
+              echo "=================================="
+              echo "Undoing previous seeds..."
+              echo "=================================="
+
+              npm run seed:undo
+
+              echo "=================================="
+              echo "Running new seeds..."
+              echo "=================================="
+
+              npm run seed
+
+              echo "=================================="
+              echo "Migration and seeding completed."
+              echo "=================================="
 
           # =========================
           # REUSE SAME ENV AS BACKEND
