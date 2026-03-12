@@ -67,6 +67,8 @@ config:
     SUBSCRIPTION_CANCEL_NOTIFY_EMAIL: "hritik@cyberambassador.co.in"
     LIVEKIT_AGENT_NAME: "cyber_ambassador_support_agent"
     CASHFREE_ENV: "PRODUCTION"
+    OTEL_NODE_RESOURCE_DETECTORS: "env,host,process,k8s,gcp"
+    OTEL_SERVICE_NAME: "cyberambassador-backend"
 
 
 database:
