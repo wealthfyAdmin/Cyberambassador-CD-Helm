@@ -48,13 +48,7 @@ spec:
               npm run migrate
 
               echo "=================================="
-              echo "Undoing previous seeds..."
-              echo "=================================="
-
-              npm run seed:undo
-
-              echo "=================================="
-              echo "Running new seeds..."
+              echo "Running seeds..."
               echo "=================================="
 
               npm run seed
