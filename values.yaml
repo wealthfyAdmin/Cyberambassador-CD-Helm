@@ -154,6 +154,6 @@ serviceAccount:
   gcpServiceAccount: trace-sa@solvox-ai-007.iam.gserviceaccount.com
 
 monitoring:
-  enabled: true
+  enabled: false
   interval: 30s
   path: /metrics
