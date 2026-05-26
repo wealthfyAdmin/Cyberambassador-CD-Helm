@@ -71,6 +71,39 @@ config:
     OTEL_SERVICE_NAME: "cyberambassador-backend"
     NPM_CONFIG_CACHE: "/tmp/.npm"
     NPM_CONFIG_UPDATE_NOTIFIER: "false"
+    REDIS_URL: "redis://cyberambassador-redis:6379"
+
+
+redis:
+  enabled: true
+  name: cyberambassador-redis
+
+  image:
+    repository: redis
+    tag: "7.2-bookworm"
+    pullPolicy: IfNotPresent
+
+  service:
+    port: 6379
+    headlessName: cyberambassador-redis-headless
+
+  persistence:
+    storageClass: standard-rwo
+    size: 1Gi
+    accessMode: ReadWriteOnce
+
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "128Mi"
+    limits:
+      cpu: "200m"
+      memory: "256Mi"
+
+  securityContext:
+    fsGroup: 999
+    runAsUser: 999
+    runAsGroup: 999
 
 
 database:
