@@ -1,94 +1,19 @@
 {{- if .Values.redis.enabled }}
-apiVersion: apps/v1
-kind: StatefulSet
+apiVersion: v1
+kind: Service
 metadata:
   name: {{ .Values.redis.name }}
   namespace: {{ .Values.namespace }}
-  annotations:
-    argocd.argoproj.io/sync-wave: "0"
   labels:
     app: {{ .Values.redis.name }}
 
 spec:
-  serviceName: {{ .Values.redis.service.headlessName }}
-  replicas: 1
-
+  type: ClusterIP
   selector:
-    matchLabels:
-      app: {{ .Values.redis.name }}
+    app: {{ .Values.redis.name }}
 
-  template:
-    metadata:
-      labels:
-        app: {{ .Values.redis.name }}
-
-    spec:
-      securityContext:
-        fsGroup: {{ .Values.redis.securityContext.fsGroup }}
-
-      containers:
-        - name: redis
-          image: "{{ .Values.redis.image.repository }}:{{ .Values.redis.image.tag }}"
-          imagePullPolicy: {{ .Values.redis.image.pullPolicy }}
-
-          ports:
-            - containerPort: {{ .Values.redis.service.port }}
-              name: redis
-
-          command:
-            - redis-server
-            - --appendonly
-            - "yes"
-            - --save
-            - "60 1"
-            - --loglevel
-            - notice
-
-          resources:
-            {{- toYaml .Values.redis.resources | nindent 12 }}
-
-          securityContext:
-            runAsUser: {{ .Values.redis.securityContext.runAsUser }}
-            runAsGroup: {{ .Values.redis.securityContext.runAsGroup }}
-            runAsNonRoot: true
-            allowPrivilegeEscalation: false
-            readOnlyRootFilesystem: false
-            capabilities:
-              drop:
-                - ALL
-            seccompProfile:
-              type: RuntimeDefault
-
-          livenessProbe:
-            exec:
-              command:
-                - redis-cli
-                - ping
-            initialDelaySeconds: 15
-            periodSeconds: 10
-            timeoutSeconds: 5
-
-          readinessProbe:
-            exec:
-              command:
-                - redis-cli
-                - ping
-            initialDelaySeconds: 5
-            periodSeconds: 5
-            timeoutSeconds: 3
-
-          volumeMounts:
-            - name: redis-data
-              mountPath: /data
-
-  volumeClaimTemplates:
-    - metadata:
-        name: redis-data
-      spec:
-        accessModes:
-          - {{ .Values.redis.persistence.accessMode }}
-        storageClassName: {{ .Values.redis.persistence.storageClass }}
-        resources:
-          requests:
-            storage: {{ .Values.redis.persistence.size }}
+  ports:
+    - port: {{ .Values.redis.service.port }}
+      targetPort: {{ .Values.redis.service.port }}
+      name: redis
 {{- end }}
